@@ -25,3 +25,5 @@ void hash_del(struct list_d* hash_t, int value, int cash_len);
 void add_hash(struct list_d* hash_t, int cash_len, int value);
 
 int check_in_hash(int value, struct list_d* hash_t, int cash_len);
+
+int* find_hash(int value, struct list_d* hash_t, int cash_len);
