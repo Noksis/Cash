@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <assert.h>
 #pragma warning (disable:4996)
-int NO_VALUE = 0;
-// Пишу здесь хэш функцию: массив из структур двухсвязных списков
 
-// Одна ячейка двухсвязного списка
+// Значения по-умолчанию
+const int NO_VALUE = 0;
+const int IN_CASH = 1;
+const int OUT_CASH = 0;
+
+// Одна ячейка хэша 
 struct list_d {
 	struct list_d* parent = NULL;
 	struct list_d* son = NULL;
@@ -14,7 +17,13 @@ struct list_d {
 
 // Создает ячейку
 void create_node(struct list_d* node) {
+
+	// Создание новой ячейки
 	struct list_d* son = (struct list_d*) calloc(1, sizeof(struct list_d));
+
+	// Проверка адресса
+	assert(node);
+	
 	son->parent = node;
 	node->son = son;
 	son->value = NO_VALUE;
@@ -23,13 +32,20 @@ void create_node(struct list_d* node) {
 
 // Удаляем ячейку
 void del_node(struct list_d* node) {
+
+	// Проверка адресса
+	assert(node);
+	
 	node->son = NULL;
 	node->parent = NULL;
 	node->value = NO_VALUE;
 };
 
-// Хэш функция. Берет число, длину кэша и вычислят значение
+// Хэш функция (Добавил побитовые операции в начале)
 int hash_f(int x, int cash_len) {
+	x += (x << 3);
+	x ^= (x >> 11);
+	x += (x << 15);
 	return ((37 * x + 34) % 7) % cash_len;
 }
 
@@ -40,10 +56,13 @@ void create_hash(int cash_len, struct list_d** hash_t) {
 
 //Удаляем из хэша значение 
 void hash_del(struct list_d* hash_t, int value, int cash_len) {
+	
+
 	//Находим ячейку в кэшэ
 	int key = hash_f(value, cash_len);
 	list_d* node = &hash_t[key];
 
+	// Проверка на коллизии
 	while (node->son != NULL && node->value != value)
 		node = node->son;
 	node->value = NO_VALUE;
@@ -52,6 +71,7 @@ void hash_del(struct list_d* hash_t, int value, int cash_len) {
 	if(node->son != NULL)
 	node->son->parent = node->parent;
 
+	// Удаляем ячейку
 	del_node(node);
 }
 
@@ -65,31 +85,44 @@ void add_hash(struct list_d* hash_t, int cash_len, int value) {
 	//Проверка на коллизии
 	while (node->son != NULL && node->value != 0)
 			node = node->son;
-		node->value = value;
-		create_node(node);
+	
+	// Создаем ячейку
+	node->value = value;
+	create_node(node);
 
 }
 
+// Ищем в хэшэ
 int* find_hash(int value, struct list_d* hash_t, int cash_len) {
 
+	// Ищем в хэш таблице
 	int key = hash_f(value, cash_len);
 	list_d* node = &hash_t[key];
 
+	// Проверка на коллизии
 	while (node->value != value && node->son != NULL)
 		node = node->son;
+
+	// Вывод результата
 	if (node->value == value)
 		return &node->value;
 	else
 		return NULL;
 }
 
+// Проверяем в хэшэ
 int check_in_hash(int value, struct list_d* hash_t, int cash_len) {
+	// Ищем в хэшэ
 	int key = hash_f(value, cash_len);
 	list_d node = hash_t[key];
+
+	// Проверка на коллизии
 	while (node.value != value && node.son != NULL)
 		node = *node.son;
+
+	// Вывод результата
 	if (node.value == value)
-		return 1;
+		return IN_CASH;
 	else
-		return 0;
+		return OUT_CASH;
 }
