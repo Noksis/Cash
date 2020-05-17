@@ -1,14 +1,17 @@
 #include "Hash_H.h"
 #include "queue.h"
-
-
+#include <assert.h>
+int ARR_SIZE = 100;
 
 int check(int value, int cash_len, struct list_d* hash_t,struct node_t* queue, int* size, int quest) {
+
 	struct list_d* node;
 	int* adress_value = find_hash(value, hash_t, cash_len);
+
 	if (check_in_hash(value, hash_t, cash_len) == 1) {
 		//Если в хэшэ, то ищем в списке и увеличиваем частоту
-		Incr_freq(queue,quest, adress_value ,cash_len); // Нашел в хэшэ ячейку со значением и передали значение в функцию, которая увеличила
+		assert(adress_value);
+		Incr_freq(queue,value,*size); // Нашел в хэшэ ячейку со значением и передали значение в функцию, которая увеличила
 		return 1;
 	}
 	else
@@ -16,19 +19,19 @@ int check(int value, int cash_len, struct list_d* hash_t,struct node_t* queue, i
 		if (*size < cash_len) {
 			// Добавить ячейку с нужным значением
 			add_hash(hash_t, cash_len, value);
+			adress_value = find_hash(value, hash_t, cash_len);
 			// Создать привязку к частоте
-			push(queue, *size, adress_value);
+			Incr_freq(queue, value, *size);
 			*size+=1;
 		}
 		else {
 			// Удалить ячейку с наименьшим приорететом
-			hash_del(hash_t, Find_Min(knot), cash_len); // Нужна функция Find_min, чтобы я из хэша удалил ячейку
+			hash_del(hash_t, Find_min(queue, *size), cash_len); // Нужна функция Find_min, чтобы я из хэша удалил ячейку
 			// Добавить ячейку с нужным значением
+
 			add_hash(hash_t, cash_len, value);
-			if (check(queue, adress_value, cash_len) == -10)
-				push(queue, *size, adress_value);
-			else
-				Incr_freq(queue, quest, adress_value, cash_len);
+			adress_value = find_hash(value, hash_t, cash_len);
+			Incr_freq(queue,value, *size);
 		}
 
 	return 0;
@@ -44,7 +47,7 @@ int main(void) {
 	scanf("%d%d", &cash_len, &quest);
 
 	//Создали очередь из кол-ва запросов
-	struct node_t* queue =  create_queue(quest);
+	struct node_t* queue =  create_queue(ARR_SIZE);
 
 	// Создаем пустую хэш таблицы
 	create_hash(cash_len, &hash_t);
