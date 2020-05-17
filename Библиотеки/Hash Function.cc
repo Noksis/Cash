@@ -49,7 +49,7 @@ void hash_del(struct list_d* hash_t, int value, int cash_len) {
 	node->value = NO_VALUE;
 
 	// Перевязыаем сына удаляемой ячейки к отцу.
-	if(node->son->value != NO_VALUE)
+	if(node->son != NULL)
 	node->son->parent = node->parent;
 
 	del_node(node);
@@ -68,6 +68,19 @@ void add_hash(struct list_d* hash_t, int cash_len, int value) {
 		node->value = value;
 		create_node(node);
 
+}
+
+int* find_hash(int value, struct list_d* hash_t, int cash_len) {
+
+	int key = hash_f(value, cash_len);
+	list_d* node = &hash_t[key];
+
+	while (node->value != value && node->son != NULL)
+		node = node->son;
+	if (node->value == value)
+		return &node->value;
+	else
+		return NULL;
 }
 
 int check_in_hash(int value, struct list_d* hash_t, int cash_len) {
