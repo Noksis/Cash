@@ -34,10 +34,7 @@ struct node_t* create_queue(int N)
 int size_check(struct node_t* top, int data_t, int N, int* sizet)
 {
 	int place = NO_HEAP;
-
-	assert(sizet != NULL);
-	assert(top != NULL);
-
+	
 	for (int i = 0; i < N; i++)
 	{
 		if ((((top + i)->data) == data_t) && (((top + i)->age) != 0))
@@ -49,7 +46,7 @@ int size_check(struct node_t* top, int data_t, int N, int* sizet)
 		};
 	};
 	if (*sizet == -1)
-		*sizet = N;
+		*sizet = N-1;
 	return place;
 };
 
@@ -127,7 +124,7 @@ void push(struct node_t* top, int i, int data_t) {
 };
 
 // Ищем размер кучи
-int size_check1(struct node_t* top, int data_t, int N, int* sizet, int* value_age)
+int size_check_age(struct node_t* top, int data_t, int N, int* sizet, int* value_age)
 {
 	int place = NO_HEAP;
 
@@ -160,7 +157,7 @@ void Incr_freq(struct node_t*** top, int data_t, int N, int* age_value) {
 	int sizet = NO_HEAP;
 
 	// Узнаем нахождение в куче
-	int p = size_check1(**top, data_t, size, &sizet, age_value);
+	int p = size_check_age(**top, data_t, size, &sizet, age_value);
 
 	//Выполняем добавление или увеличение
 	if (p == NO_HEAP) {
@@ -207,9 +204,10 @@ int Find_min(struct node_t* top)
 //Удаление элемента N - размер очереди
 void delete_min(struct node_t* top, int N)
 {
-	swap(top, (top + N - 1));
-	((top + N - 1)->age) = 0;
-	((top + N - 1)->data) = -1;
+	swap(top, top+N-1);
+	((top + N)->age) = 0;
+	((top + N)->data) = -1;
+	shift_down(top, 0,N);
 };
 
 // Добавить элемент из большой кучи
@@ -236,13 +234,13 @@ void Incr_freq_small(struct node_t*** top, int data_t, int cash_len, int age_val
 	if (p == NO_HEAP)
 	{
 		push1(**top, sizet, data_t,age_value);
-		shift_up(**top, sizet);
+		shift_down(**top,sizet, cash_len);
 	}
 // Обновление возраста
 	else
 	{
-	((**top + p)->age)++;
-	shift_up(**top, p);
-	shift_down(**top, p, sizet);
-	};
+		((**top + p)->age)++;
+		shift_up(**top, p);
+		shift_down(**top, p, sizet);
+	}
 }
