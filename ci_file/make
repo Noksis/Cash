@@ -1,0 +1,13 @@
+all: result
+
+result: main.o queue.o Hash_Function.o
+	gcc main.o queue.o Hash_Function.o -o result
+	
+main.o: main.c
+	gcc -c main.c
+
+queue.o: queue.c
+	gcc -c queue.c
+
+Hash_Function.o: Hash_Function.c
+	gcc -c Hash_Function.c
