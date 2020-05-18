@@ -96,6 +96,7 @@ void shift_down(struct node_t* top, int i, int N)
 		swap((top + i), (top + left(i)));
 };
 
+
 void shift_up(struct node_t* top, int i)
 {
 	if (i == 0)
@@ -125,9 +126,33 @@ void push(struct node_t* top, int i, int data_t) {
 	((top + i)->data) = data_t;
 };
 
-// Добавления элемента в очередь или увеличение возраста
-void Incr_freq(struct node_t*** top, int data_t, int N) {
+// Ищем размер кучи
+int size_check1(struct node_t* top, int data_t, int N, int* sizet, int* value_age)
+{
+	int place = NO_HEAP;
 
+	assert(sizet != NULL);
+	assert(top != NULL);
+
+	for (int i = 0; i < N; i++)
+	{
+		if ((((top + i)->data) == data_t) && (((top + i)->age) != 0)) {
+			*value_age = (top + i)->age+1;
+			place = i;
+		}
+		if (((top + i)->age) == 0)
+		{
+			*sizet = i;
+			break;
+		};
+	};
+	if (*sizet == -1)
+		*sizet = N;
+	return place;
+};
+
+// Добавления элемента в очередь или увеличение возраста
+void Incr_freq(struct node_t*** top, int data_t, int N, int* age_value) {
 	//Задаем начальный размер кучи
 	static int size = ARR_SIZE;
 
@@ -135,7 +160,7 @@ void Incr_freq(struct node_t*** top, int data_t, int N) {
 	int sizet = NO_HEAP;
 
 	// Узнаем нахождение в куче
-	int p = size_check(**top, data_t, size, &sizet);
+	int p = size_check1(**top, data_t, size, &sizet, age_value);
 
 	//Выполняем добавление или увеличение
 	if (p == NO_HEAP) {
@@ -173,8 +198,51 @@ void Incr_freq(struct node_t*** top, int data_t, int N) {
 };
 
 // Поиск минимального
-int Find_min(struct node_t* top, int N)
+int Find_min(struct node_t* top)
 {
 	assert((top != NULL) && "Find_min");
 	return top->data;
 };
+
+//Удаление элемента N - размер очереди
+void delete_min(struct node_t* top, int N)
+{
+	swap(top, (top + N - 1));
+	((top + N - 1)->age) = 0;
+	((top + N - 1)->data) = -1;
+};
+
+// Добавить элемент из большой кучи
+void push1(struct node_t* top, int i, int data_t,int age) {
+
+
+	assert((top != NULL) && "push");
+	assert((i >= 0) && "push");
+
+
+	((top + i)->age) = age;
+	((top + i)->data) = data_t;
+};
+
+// Добавление элемента из большой кучи в малую
+void Incr_freq_small(struct node_t*** top, int data_t, int cash_len, int age_value) {
+
+	// Размер кучи
+	int sizet = NO_HEAP;
+
+	// Узнаем место значения
+	int p = size_check(**top, data_t, cash_len, &sizet);
+
+	if (p == NO_HEAP)
+	{
+		push1(**top, sizet, data_t,age_value);
+		shift_up(**top, sizet);
+	}
+// Обновление возраста
+	else
+	{
+	((**top + p)->age)++;
+	shift_up(**top, p);
+	shift_down(**top, p, sizet);
+	};
+}
