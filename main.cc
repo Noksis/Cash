@@ -9,7 +9,7 @@ const int MISS_CASH = 0;
 
 
 //Подсчет попаданий в кэш
-int check(int value, int cash_len, struct list_d* hash_t,struct node_t* queue, int* size, int quest) {
+int check(int value, int cash_len, struct list_d* hash_t,struct node_t** queue, int* size, int quest) {
 
 	// Проверка данных
 	assert(hash_t);
@@ -20,7 +20,7 @@ int check(int value, int cash_len, struct list_d* hash_t,struct node_t* queue, i
 	if (check_in_hash(value, hash_t, cash_len) == SUCCESS) {
 
 		//Если в кэшэ, то увеличиваем частоту
-		Incr_freq(queue,value,*size);
+		Incr_freq(&queue,value,*size);
 		return HIT_CASH;
 
 	}
@@ -32,7 +32,7 @@ int check(int value, int cash_len, struct list_d* hash_t,struct node_t* queue, i
 			add_hash(hash_t, cash_len, value);
 
 			// Добавить частоту
-			Incr_freq(queue, value, *size);
+			Incr_freq(&queue, value, *size);
 
 			// Увеличиваем размер кэша
 			*size+=1;
@@ -42,13 +42,13 @@ int check(int value, int cash_len, struct list_d* hash_t,struct node_t* queue, i
 	// Удаляем из кэша и добавляем новый элемент
 		else {
 			// Удалить ячейку с наименьшим приорететом
-			hash_del(hash_t, Find_min(queue, *size), cash_len);
+			hash_del(hash_t, Find_min(*queue, *size), cash_len);
 
 			// Добавить ячейку с нужным значением
 			add_hash(hash_t, cash_len, value);
 
 			// Увеличить частоту
-			Incr_freq(queue,value, *size);
+			Incr_freq(&queue,value, *size);
 
 			return MISS_CASH;
 		}
@@ -66,10 +66,12 @@ int main(int argc, char** argv) {
 	struct list_d* hash_t = NULL;
 	int size = 0;
 	
-	// Читаем длину кэша и кол-во запросов
-	assert(scanf("%d%d", &cash_len, &quest));
+	Commands1 // Красивое меню
 
-	FILE* f = fopen("test.txt", "r");
+	// Читаем длину кэша и кол-во запросов
+	assert(scanf("%d", &cash_len));
+	printf("	/Number of request-------->");
+	assert(scanf("%d", &quest));
 
 	//Создали очередь из кол-ва запросов
 	struct node_t* queue =  create_queue(ARR_SIZE);
@@ -80,12 +82,15 @@ int main(int argc, char** argv) {
 
 
 	// Запускаем кэширование запросов
-	for (int i = 0; i < quest;i++) {
+	for (int i = 0; i < quest; i++) {
+
 		// Читаем запрос
+		printf("	/Page[%d]----------------->",i);
 		assert(scanf("%d", &value));
+		printf("\n");
 
 		// Проверяем попадание в кэш
-		if (check(value,cash_len,hash_t,queue,&size,quest) == 1)
+		if (check(value,cash_len,hash_t,&queue,&size,quest) == 1)
 			count++;
 	}
 
