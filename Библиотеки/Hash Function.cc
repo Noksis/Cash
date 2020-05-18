@@ -4,7 +4,7 @@
 #pragma warning (disable:4996)
 
 // Значения по-умолчанию
-const int NO_VALUE = 0;
+const int NO_VALUE = -1;
 const int IN_CASH = 1;
 const int OUT_CASH = 0;
 
@@ -52,6 +52,8 @@ int hash_f(int x, int cash_len) {
 // Создаем хэш таблицу и заполняем нулями
 void create_hash(int cash_len, struct list_d** hash_t) {
 	*hash_t = (struct list_d*)calloc(cash_len, sizeof(struct list_d));
+	for (int i = 0; i < cash_len; i++)
+		(*hash_t + i)->value = NO_VALUE;
 }
 
 //Удаляем из хэша значение 
@@ -68,11 +70,28 @@ void hash_del(struct list_d* hash_t, int value, int cash_len) {
 	node->value = NO_VALUE;
 
 	// Перевязыаем сына удаляемой ячейки к отцу.
-	if(node->son != NULL)
-	node->son->parent = node->parent;
+	
+	//Если есть коллизии
+	if (node->son != NULL) {
+		//Если есть сверху что-то
+		if (node->parent != NULL) {
+			node->son->parent = node->parent;
+			del_node(node);
+			return;
+		}
+		// Если сверху нет ничего
+		else {
+			hash_t[key] = *node->son;
+			hash_t[key].parent = NULL;
+			// Удаляем ячейку
+			del_node(node->son);
+			return;
+		}
+	}
+	del_node;
+	return;
 
-	// Удаляем ячейку
-	del_node(node);
+	
 }
 
 // Добавляем в кэш новое значени и сдвигаем все предыдущие
