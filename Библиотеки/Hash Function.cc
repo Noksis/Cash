@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 #pragma warning (disable:4996)
 
 // Значения по-умолчанию
@@ -44,7 +45,7 @@ int hash_f(int x, int cash_len) {
 	x += (x << 3);
 	x ^= (x >> 11);
 	x += (x << 15);
-	return ((37 * x + 34) % 7) % cash_len;
+	return (abs((37 * x + 34) % 7)) % cash_len;
 }
 
 // Создаем хэш таблицу и заполняем нулями
@@ -68,24 +69,12 @@ void hash_del(struct list_d* hash_t, int value, int cash_len) {
 	node->value = NO_VALUE;
 
 	// Перевязыаем сына удаляемой ячейки к отцу.
-	
-	//Если есть коллизии
-	if (node->son != NULL) {
-		//Если есть сверху что-то
-		if (node->parent != NULL) {
-			node->son->parent = node->parent;
-			del_node(node);
-			return;
-		}
-		// Если сверху нет ничего
-		else {
-			save_node = node->son;
-			del_node(node);
-			hash_t[key] = *save_node;
-			hash_t[key].parent = NULL;
-			return;
-		}
-	}
+	if(node->son != NULL)
+		node->son->parent = node->parent;
+	if(node->parent != NULL)
+		node->parent->son = node->son;
+
+
 	del_node(node);
 	return;
 
