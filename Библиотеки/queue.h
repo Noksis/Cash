@@ -59,8 +59,11 @@ int check(struct node_t* top, int data_t, int N);//+
 //												ОСНОВНАЯ ФУНКЦИЯ											//
 //Добавляем элемент в хэш или увеличиваем частоту уже существующего
 // Вводим начало кучи(top), искомое значение(data_t) и размер кучи(N)
-void Incr_freq(struct node_t*** top, int data_t, int N);//+
+void Incr_freq(struct node_t*** top, int data_t, int N, int* age_value);//+
 
 
 //возвращает данные с наименьшим приоритетом
-int Find_min(struct node_t* top, int N);
+int Find_min(struct node_t* top);
+
+// Добавляет в малую кучу из большой кучи
+void Incr_freq_small(struct node_t*** top, int data_t, int cash_len, int age_value);
