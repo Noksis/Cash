@@ -1,12 +1,22 @@
 #pragma once
-#include "queue.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #pragma warning (disable:4996)
 
+#define Commands1 \
+printf("	/|||||||||||||||||||||||||||||||||||||||||||\\\n"); \
+printf("	/                    Hello!                 \\\n"); \
+printf("	/Please input cash len and number of request\\\n"); \
+printf("	/                                           \\\n"); \
+printf("	/                                           \\\n"); \
+printf("	/                                           \\\n"); \
+printf("	/|||||||||||||||||||||||||||||||||||||||||||\\\n"); \
+printf("	/Cash len----------------->");\
+
+
 // Значения по-умолчанию
-const int NO_VALUE = 0;
+const int NO_VALUE = -1;
 const int IN_CASH = 1;
 const int OUT_CASH = 0;
 
