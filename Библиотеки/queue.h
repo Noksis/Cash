@@ -13,7 +13,7 @@ static inline int left(int i) { return 2 * i + 1; };
 static inline int right(int i) { return 2 * i + 2; };
 
 // Константы
-const int ARR_SIZE = 100;
+const int ARR_SIZE = 1;
 const int NO_HEAP = -1;
 const int IN_HEAP = 1;
 const int ADD_SIZE = 1000;
@@ -59,7 +59,7 @@ int check(struct node_t* top, int data_t, int N);//+
 //												ОСНОВНАЯ ФУНКЦИЯ											//
 //Добавляем элемент в хэш или увеличиваем частоту уже существующего
 // Вводим начало кучи(top), искомое значение(data_t) и размер кучи(N)
-void Incr_freq(struct node_t* top, int data_t, int N);//+
+void Incr_freq(struct node_t*** top, int data_t, int N);//+
 
 
 //возвращает данные с наименьшим приоритетом
