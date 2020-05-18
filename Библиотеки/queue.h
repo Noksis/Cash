@@ -28,6 +28,8 @@ struct node_t* min_t(struct node_t* left, struct node_t* right);//+
 //Определение длины очереди
 int size_check(struct node_t* top, int data_t, int N, int* sizet);
 
+// Определение длины очереди и узнать вес элемента 
+int size_check_age(struct node_t* top, int data_t, int N, int* sizet, int* value_age);
 
 //Определение размера очереди
 // Вводим начальный элемент очереди(top) и размер очереди(N)
