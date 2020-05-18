@@ -33,8 +33,6 @@ void create_node(struct list_d* node) {
 // Удаляем ячейку
 void del_node(struct list_d* node) {
 
-	// Проверка адресса
-	assert(node);
 	
 	node->son = NULL;
 	node->parent = NULL;
@@ -63,7 +61,7 @@ void hash_del(struct list_d* hash_t, int value, int cash_len) {
 	//Находим ячейку в кэшэ
 	int key = hash_f(value, cash_len);
 	list_d* node = &hash_t[key];
-
+	list_d* save_node;
 	// Проверка на коллизии
 	while (node->son != NULL && node->value != value)
 		node = node->son;
@@ -81,14 +79,14 @@ void hash_del(struct list_d* hash_t, int value, int cash_len) {
 		}
 		// Если сверху нет ничего
 		else {
-			hash_t[key] = *node->son;
+			save_node = node->son;
+			del_node(node);
+			hash_t[key] = *save_node;
 			hash_t[key].parent = NULL;
-			// Удаляем ячейку
-			del_node(node->son);
 			return;
 		}
 	}
-	del_node;
+	del_node(node);
 	return;
 
 	
