@@ -32,7 +32,6 @@ int check(int value, int cash_len, struct list_d* hash_t,struct node_t** queue_b
 
 	}
 	else
-
 		// Добавляем в кэш
 		if (*size < cash_len) {
 			// Добавить ячейку с нужным значением
@@ -74,21 +73,27 @@ int check(int value, int cash_len, struct list_d* hash_t,struct node_t** queue_b
 };
 
 int main(int argc, char** argv) {
-	
+
 	//Вводим нужные переменные
 	int cash_len = 0;
 	int quest = 0;
 	int value = 0;
-	int count = 0;
+	int hash_hit = 0;
 	struct list_d* hash_t = NULL;
 	int size = 0;
-	
+
 	Commands1 // Красивое меню
 
 	// Читаем длину кэша и кол-во запросов
+
 	assert(scanf("%d", &cash_len));
 	printf("	/Number of request-------->");
 	assert(scanf("%d", &quest));
+
+
+	//FILE* f = fopen("input6.txt", "r");
+	//fscanf(f, "%d%d", &cash_len, &quest);
+	
 
 	//Создали очередь из кол-ва запросов
 	struct node_t* queue_big =  create_queue(ARR_SIZE);
@@ -106,15 +111,15 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < quest; i++) {
 
 		// Читаем запрос
-		printf("	/Page[%d]----------------->",i);
-		assert(scanf("%d", &value));
-		printf("\n");
+		assert(fscanf(stdin,"%d", &value));
 
 		// Проверяем попадание в кэш
 		if (check(value,cash_len,hash_t,&queue_big,&size,quest,&queue_small) == 1)
-			count++;
+			hash_hit++;
 	}
 
 	// Выводим ответ
-	printf("%d", count);
+	printf("%d", hash_hit);
+	free(hash_t);
+	free(queue_big);
 }
